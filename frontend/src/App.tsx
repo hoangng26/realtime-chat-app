@@ -1,8 +1,17 @@
+import { ConfigProvider, ThemeConfig } from 'antd';
 import { RouterProvider } from 'react-router-dom';
 import routes from './routes';
 
 function App() {
-  return <RouterProvider router={routes} />;
+  const themeConfig: ThemeConfig = {
+    algorithm: [],
+  };
+
+  return (
+    <ConfigProvider theme={themeConfig}>
+      <RouterProvider router={routes} />
+    </ConfigProvider>
+  );
 }
 
 export default App;

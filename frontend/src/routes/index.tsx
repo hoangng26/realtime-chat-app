@@ -1,13 +1,15 @@
-import { createBrowserRouter, Link } from 'react-router-dom';
+import AuthPageComponent from '@/pages/Auth';
+import HomePageComponent from '@/pages/Home';
+import { createBrowserRouter } from 'react-router-dom';
 
 const routes = createBrowserRouter([
   {
     path: '/',
-    element: <Link to="test">Test Page</Link>,
+    element: <HomePageComponent />,
   },
   {
-    path: '/test',
-    element: <Link to="/">Back to Home</Link>,
+    path: '/auth',
+    element: <AuthPageComponent />,
   },
 ]);
 
