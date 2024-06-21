@@ -26,7 +26,7 @@ const MessageComponent: React.FC<MessageComponentProps> = ({
       <Flex justify={loginUser ? 'flex-end' : 'flex-start'}>
         <Card
           size="small"
-          className={`max-w-[90%] w-fit ${loginUser ? 'bg-sky-100' : 'bg-neutral-100'}`}
+          className={`max-w-[80%] w-fit ${loginUser ? 'bg-sky-100' : 'bg-neutral-100'}`}
           bordered={false}
         >
           <Space direction="vertical">
