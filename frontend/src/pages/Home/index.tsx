@@ -25,10 +25,12 @@ const HomePageComponent: React.FC = () => {
           }))}
         />
       </Sider>
+
       <Layout className="m-6 overflow-hidden" style={{ borderRadius: borderRadiusLG }}>
         <Header className={`px-6 border-b`} style={{ background: colorBgContainer }}>
-          Header
+          <span className="font-bold text-xl">Room 01</span>
         </Header>
+
         <Content>
           <Space
             direction="vertical"
@@ -71,6 +73,7 @@ const HomePageComponent: React.FC = () => {
             />
           </Space>
         </Content>
+
         <Footer className={`px-6 border-t`} style={{ background: colorBgContainer }}>
           <Flex gap="small">
             <Input variant="filled" placeholder="Please input message" allowClear />
