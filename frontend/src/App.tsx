@@ -1,14 +1,17 @@
-import { ConfigProvider, ThemeConfig } from 'antd';
+import { ConfigProvider, ConfigProviderProps } from 'antd';
 import { RouterProvider } from 'react-router-dom';
 import routes from './routes';
 
 function App() {
-  const themeConfig: ThemeConfig = {
-    algorithm: [],
+  const configProviderProps: ConfigProviderProps = {
+    theme: {
+      algorithm: [],
+    },
+    componentSize: 'large',
   };
 
   return (
-    <ConfigProvider theme={themeConfig}>
+    <ConfigProvider {...configProviderProps}>
       <RouterProvider router={routes} />
     </ConfigProvider>
   );
