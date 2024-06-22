@@ -5,7 +5,7 @@ import { User } from './user.entity';
 @Table({
   paranoid: true,
 })
-export class User_Channel extends Model {
+export class User_Channel extends Model<User_Channel> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,

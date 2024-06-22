@@ -14,6 +14,7 @@ export const databaseProviders: Provider[] = [
       const sequelize = new Sequelize(databaseConfig);
       sequelize.addModels([User, Channel, Message, User_Channel]);
       await sequelize.sync();
+      // await sequelize.sync({ force: true });
       return sequelize;
     },
   },

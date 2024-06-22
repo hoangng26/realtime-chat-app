@@ -4,7 +4,7 @@ import { CHANNEL_TYPE } from '../constants';
 @Table({
   paranoid: true,
 })
-export class Channel extends Model {
+export class Channel extends Model<Channel> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
