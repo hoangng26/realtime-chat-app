@@ -33,7 +33,7 @@ export class ChannelService {
     return await this.channelRepository.findAll({
       where: {
         name: {
-          [Op.substring]: `${query}`,
+          [Op.substring]: query,
         },
       },
     });

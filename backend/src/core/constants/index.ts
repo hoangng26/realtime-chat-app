@@ -19,3 +19,12 @@ export enum USER_EVENTS {
   UPDATE = 'user:update',
   REMOVE = 'user:remove',
 }
+
+export enum CHANNEL_EVENTS {
+  CREATE = 'channel:create',
+  FIND_ALL = 'channel:findAll',
+  FIND_ONE = 'channel:findOne',
+  FIND_MANY = 'channel:findMany',
+  UPDATE = 'channel:update',
+  REMOVE = 'channel:remove',
+}

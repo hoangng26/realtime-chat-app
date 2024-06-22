@@ -1,6 +1,6 @@
 import { Provider } from '@nestjs/common';
-import { Channel } from 'diagnostics_channel';
 import { CHANNEL_REPOSITORY } from 'src/core/constants';
+import { Channel } from 'src/core/models/channel.entity';
 
 export const channelProviders: Provider[] = [
   {

@@ -33,7 +33,7 @@ export class UserService {
     return await this.userRepository.findAll({
       where: {
         userName: {
-          [Op.substring]: `${query}`,
+          [Op.substring]: query,
         },
       },
     });
