@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
-import { CHANNEL_REPOSITORY } from 'src/core/constants';
+import { CHANNEL_REPOSITORY, CHANNEL_TYPE } from 'src/core/constants';
 import { ChannelDto } from 'src/core/dtos/channel.dto';
 import { Channel } from 'src/core/models/channel.entity';
 
@@ -18,7 +18,11 @@ export class ChannelService {
   }
 
   async findAll(): Promise<Channel[]> {
-    return await this.channelRepository.findAll<Channel>();
+    return await this.channelRepository.findAll<Channel>({
+      where: {
+        type: CHANNEL_TYPE.PUBLIC,
+      },
+    });
   }
 
   async findOne(id: number): Promise<Channel> {
@@ -35,6 +39,7 @@ export class ChannelService {
         name: {
           [Op.substring]: query,
         },
+        type: CHANNEL_TYPE.PUBLIC,
       },
     });
   }

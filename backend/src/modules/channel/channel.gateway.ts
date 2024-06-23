@@ -1,11 +1,28 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway, WsResponse } from '@nestjs/websockets';
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  WsResponse,
+} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 import { CHANNEL_EVENTS } from 'src/core/constants';
 import { ChannelDto } from 'src/core/dtos/channel.dto';
+import { UserChannelDto } from 'src/core/dtos/user_channel.dto';
+import { User_Channel } from 'src/core/models/user_channel.entity';
+import { UserChannelService } from '../user_channel/user_channel.service';
 import { ChannelService } from './channel.service';
 
 @WebSocketGateway()
 export class ChannelGateway {
-  constructor(private readonly channelService: ChannelService) {}
+  constructor(
+    private readonly channelService: ChannelService,
+    private readonly userChannelService: UserChannelService,
+  ) {}
+
+  @WebSocketServer()
+  private readonly io: Server;
 
   @SubscribeMessage(CHANNEL_EVENTS.CREATE)
   async create(@MessageBody() channelDto: ChannelDto) {
@@ -45,5 +62,22 @@ export class ChannelGateway {
       event: CHANNEL_EVENTS.FIND_MANY,
       data,
     };
+  }
+
+  @SubscribeMessage(CHANNEL_EVENTS.JOIN)
+  async join(@ConnectedSocket() client: Socket, @MessageBody() userChannelDto: UserChannelDto) {
+    const { channelId } = userChannelDto;
+
+    let data: User_Channel;
+    data = await this.userChannelService.findOne(userChannelDto);
+    if (!data) {
+      data = await this.userChannelService.create(userChannelDto);
+    }
+
+    client.join(`room-${channelId}`);
+    this.io.in(`room-${channelId}`).emit(CHANNEL_EVENTS.JOIN, {
+      data,
+      joinedTime: Date.now(),
+    });
   }
 }

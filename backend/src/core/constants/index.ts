@@ -8,6 +8,7 @@ export enum CHANNEL_TYPE {
 // Repository
 export const USER_REPOSITORY: string = 'USER_REPOSITORY';
 export const CHANNEL_REPOSITORY: string = 'CHANNEL_REPOSITORY';
+export const USER_CHANNEL_REPOSITORY: string = 'USER_CHANNEL_REPOSITORY';
 export const MESSAGE_REPOSITORY: string = 'MESSAGE_REPOSITORY';
 
 // Event
@@ -27,4 +28,11 @@ export enum CHANNEL_EVENTS {
   FIND_MANY = 'channel:findMany',
   UPDATE = 'channel:update',
   REMOVE = 'channel:remove',
+  JOIN = 'channel:join',
+}
+
+export enum MESSAGE_EVENTS {
+  SEND = 'message:send',
+  RECEIVE = 'message:receive',
+  GET_ALL_CHANNEL_MESSAGE = 'message:getAllChannelMessage',
 }
