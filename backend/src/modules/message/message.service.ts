@@ -12,13 +12,20 @@ export class MessageService {
   ) {}
 
   async create(messageDto: MessageDto): Promise<Message> {
-    return this.messageRepository.create<Message>(messageDto, {
+    const message = await this.messageRepository.create<Message>(messageDto, {
       returning: true,
+    });
+
+    return await this.messageRepository.findOne<Message>({
+      where: {
+        id: message.id,
+      },
+      include: User,
     });
   }
 
   async findAllChannelMessage(channelId: number): Promise<Message[]> {
-    return this.messageRepository.findAll<Message>({
+    return await this.messageRepository.findAll<Message>({
       where: {
         channelId: channelId,
       },

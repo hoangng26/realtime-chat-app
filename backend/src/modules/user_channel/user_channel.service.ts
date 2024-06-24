@@ -13,10 +13,11 @@ export class UserChannelService {
   ) {}
 
   async create(data: UserChannelDto): Promise<User_Channel> {
-    return await this.userChannelRepository.create<User_Channel>(data, {
+    const { userId, channelId } = await this.userChannelRepository.create<User_Channel>(data, {
       returning: true,
-      include: [User, Channel],
     });
+
+    return await this.findOne({ userId, channelId });
   }
 
   async findAllUserOfChannel(channelId: number): Promise<User_Channel[]> {
