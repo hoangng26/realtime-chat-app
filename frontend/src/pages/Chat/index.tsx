@@ -1,7 +1,6 @@
 import MessageComponent from '@/components/MessageComponent';
-import { MESSAGE_EVENTS, USER_EVENTS } from '@/core/constants/socketEvents';
+import { MESSAGE_EVENTS } from '@/core/constants/socketEvents';
 import { Message } from '@/core/models/Message';
-import { User } from '@/core/models/User';
 import { useAppState } from '@/core/redux/action';
 import { socket } from '@/core/socket';
 import { SendOutlined } from '@ant-design/icons';
@@ -25,6 +24,18 @@ const ChatPageComponent: React.FC = () => {
       userId: appState.user.id,
       channelId: appState.selectedChannel?.id,
     });
+
+    clearMessageInput();
+  };
+
+  const inputPressEnterHandler: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.keyCode === 13 && messageInput.trim()) {
+      messageSendHandler();
+    }
+  };
+
+  const clearMessageInput = () => {
+    setMessageInput('');
   };
 
   useEffect(() => {
@@ -42,18 +53,7 @@ const ChatPageComponent: React.FC = () => {
 
   useEffect(() => {
     const receiveMessage = (data: Message) => {
-      const { userId } = data;
-
-      socket.emit(USER_EVENTS.FIND_ONE, userId);
-      socket.on(USER_EVENTS.FIND_ONE, (user: User) => {
-        setListMessage((prevState) => [
-          ...prevState,
-          {
-            ...data,
-            user,
-          },
-        ]);
-      });
+      setListMessage((prevState) => [...prevState, data]);
     };
 
     socket.on(MESSAGE_EVENTS.RECEIVE, receiveMessage);
@@ -95,6 +95,7 @@ const ChatPageComponent: React.FC = () => {
             allowClear
             value={messageInput}
             onChange={(event) => setMessageInput(event.currentTarget.value)}
+            onKeyUp={inputPressEnterHandler}
           />
           <Button type="primary" icon={<SendOutlined />} iconPosition="end" onClick={messageSendHandler}>
             Send

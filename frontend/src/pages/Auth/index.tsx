@@ -34,7 +34,7 @@ const AuthPageComponent: React.FC = () => {
     socket.on(CHANNEL_EVENTS.JOIN, ({ data }) => {
       const { user } = data;
       dispatch(SET_USER(user));
-      saveSessionInfo(userName, channelId);
+      saveSessionInfo(user, channelId);
     });
     socket.emit(CHANNEL_EVENTS.FIND_ONE, channelId);
     socket.on(CHANNEL_EVENTS.FIND_ONE, (channel: Channel) => {
