@@ -1,8 +1,8 @@
-import { LOG_OUT, useAppDispatch } from '@/core/redux/action';
+import { LOG_OUT, useAppDispatch, useAppState } from '@/core/redux/action';
 import { clearSessionInfo } from '@/core/utils/localStorage';
 import { socketEndSession } from '@/core/utils/socket';
 import { LogoutOutlined, PlusOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Avatar, Menu } from 'antd';
 import { MenuClickEventHandler } from 'node_modules/rc-menu/lib/interface';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ enum ACTION {
 }
 
 const SiderActionMenuComponent: React.FC = () => {
+  const appState = useAppState();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -23,6 +24,8 @@ const SiderActionMenuComponent: React.FC = () => {
         break;
       case ACTION.LOG_OUT:
         logoutHandler();
+        break;
+      default:
         break;
     }
   };
@@ -42,6 +45,11 @@ const SiderActionMenuComponent: React.FC = () => {
         selectable={false}
         onClick={menuClickHandler}
         items={[
+          {
+            key: '',
+            label: `Hello, ${appState.user.userName}!`,
+            icon: <Avatar size="small" src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />,
+          },
           {
             key: ACTION.ADD_CHANNEL,
             label: 'Add Channel',

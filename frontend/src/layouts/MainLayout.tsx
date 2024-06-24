@@ -73,6 +73,8 @@ const MainLayout: React.FC = () => {
   return (
     <Layout className="h-screen" hasSider>
       <Sider collapsible trigger={<MenuUnfoldOutlined />}>
+        <SiderActionMenuComponent />
+        <Divider className="bg-white" />
         <Menu
           defaultSelectedKeys={[selectedChannelId]}
           mode="inline"
@@ -84,8 +86,6 @@ const MainLayout: React.FC = () => {
             icon: <ApartmentOutlined />,
           }))}
         />
-        <Divider className="bg-white" />
-        <SiderActionMenuComponent />
       </Sider>
       <Outlet />
     </Layout>
