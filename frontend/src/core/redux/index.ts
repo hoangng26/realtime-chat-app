@@ -3,6 +3,7 @@ import { AppState } from './types';
 
 export const initialAppState: AppState = {
   user: {
+    id: 0,
     userName: '',
   },
   channel: [],

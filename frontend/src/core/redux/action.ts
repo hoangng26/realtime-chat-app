@@ -12,6 +12,12 @@ export const appSlice = createSlice({
     SET_USER: (state: AppState, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+    LOG_OUT: (state: AppState) => {
+      const { user, channel, selectedChannel } = initialAppState;
+      state.user = user;
+      state.channel = channel;
+      state.selectedChannel = selectedChannel;
+    },
     SET_LIST_CHANNEL: (state: AppState, action: PayloadAction<Channel[]>) => {
       state.channel = action.payload;
     },
@@ -27,7 +33,7 @@ export const appSlice = createSlice({
   },
 });
 
-export const { SET_USER, SET_LIST_CHANNEL, SET_CHANNEL, LOADING_ENABLE, LOADING_DISABLE } = appSlice.actions;
+export const { SET_USER, LOG_OUT, SET_LIST_CHANNEL, SET_CHANNEL, LOADING_ENABLE, LOADING_DISABLE } = appSlice.actions;
 
 export const useAppState = () => useSelector((state: RootState) => state.app);
 export const useAppDispatch = () => useDispatch<AppDispatch>();
