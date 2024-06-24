@@ -35,8 +35,8 @@ const AuthPageComponent: React.FC = () => {
       const { user } = data;
       dispatch(SET_USER(user));
       saveSessionInfo(user, channelId);
+      socket.emit(CHANNEL_EVENTS.FIND_ONE, channelId);
     });
-    socket.emit(CHANNEL_EVENTS.FIND_ONE, channelId);
     socket.on(CHANNEL_EVENTS.FIND_ONE, (channel: Channel) => {
       dispatch(SET_CHANNEL(channel));
       navigate(`/chat/${channelId}`);
