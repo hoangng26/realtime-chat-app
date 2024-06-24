@@ -90,7 +90,10 @@ export class ChannelGateway {
       });
 
       if (!data) {
-        data = await this.userChannelService.create(body);
+        data = await this.userChannelService.create({
+          userId: user.id,
+          channelId,
+        });
       }
     }
 
