@@ -1,7 +1,7 @@
 import { ConfigProvider, ConfigProviderProps } from 'antd';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
-import store from './redux/store';
+import store from './core/redux/store';
 import routes from './routes';
 
 function App() {

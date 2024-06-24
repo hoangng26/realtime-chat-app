@@ -5,7 +5,8 @@ const HomePageComponent: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/chat/0');
+    const channelId = localStorage.getItem('channelId');
+    navigate(`/chat/${channelId}`);
   }, [navigate]);
 
   return <></>;

@@ -15,4 +15,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  envPrefix: ['API_', 'ENV_'],
 });
