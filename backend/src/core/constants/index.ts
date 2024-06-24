@@ -29,6 +29,7 @@ export enum CHANNEL_EVENTS {
   UPDATE = 'channel:update',
   REMOVE = 'channel:remove',
   JOIN = 'channel:join',
+  FIND_USER_CHANNELS = 'channel:findUserChannels',
 }
 
 export enum MESSAGE_EVENTS {

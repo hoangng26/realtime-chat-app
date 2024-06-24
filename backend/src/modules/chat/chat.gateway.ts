@@ -9,7 +9,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: true,
+})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(ChatGateway.name);
 
@@ -17,7 +19,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   io: Server;
 
   messages = [];
-  room = [];
+  channel = [];
 
   afterInit() {
     this.logger.debug('Initialized');
@@ -40,33 +42,5 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.debug(`Payload: ${payload}`);
     8;
     client.emit('test-event', 'Hello World');
-  }
-
-  @SubscribeMessage('channel:join')
-  handleChannelJoin(client: Socket, payload: any) {
-    const { username, room } = payload;
-    const createdtime = Date.now();
-    client.join(room);
-
-    client.to(room).emit('message:send', {
-      message: `${username} has joined this chat room`,
-      username: 'CHAT_BOT',
-      createtime: createdtime,
-    });
-
-    client.emit('message:send', {
-      message: `Welcome ${username} to this channel`,
-      username: 'CHAT_BOT',
-      createtime: createdtime,
-    });
-  }
-
-  @SubscribeMessage('message:send')
-  handleMessageSend(client: Socket, payload: any) {
-    const { room } = payload;
-
-    this.messages.push(payload);
-
-    this.io.in(room).emit('message:send', payload);
   }
 }

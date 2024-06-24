@@ -22,7 +22,7 @@ export class MessageGateway {
   async sendMessageToChannel(@ConnectedSocket() client: Socket, @MessageBody() messageDto: MessageDto) {
     const data = await this.messageService.create(messageDto);
 
-    this.io.in(`room-${messageDto.channelId}`).emit(MESSAGE_EVENTS.RECEIVE, data);
+    this.io.in(`channel-${messageDto.channelId}`).emit(MESSAGE_EVENTS.RECEIVE, data);
   }
 
   @SubscribeMessage(MESSAGE_EVENTS.GET_ALL_CHANNEL_MESSAGE)
