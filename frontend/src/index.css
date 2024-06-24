@@ -36,6 +36,11 @@
     background: #888;
     border-radius: 1rem;
     border: 1px solid transparent;
+    visibility: hidden;
+  }
+
+  :hover::-webkit-scrollbar-thumb {
+    visibility: visible;
   }
 
   ::-webkit-scrollbar-track {

@@ -35,8 +35,9 @@ const ChatPageComponent: React.FC = () => {
   }, [appState.selectedChannel?.id]);
 
   useEffect(() => {
-    console.log('scroll...');
-    contentRef.current!.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    if (contentRef.current && contentRef.current.lastElementChild) {
+      contentRef.current.lastElementChild.scrollIntoView();
+    }
   }, [listMessage.length]);
 
   useEffect(() => {
