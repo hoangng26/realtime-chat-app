@@ -19,7 +19,7 @@ export const appSlice = createSlice({
       state.selectedChannel = selectedChannel;
     },
     SET_LIST_CHANNEL: (state: AppState, action: PayloadAction<Channel[]>) => {
-      state.channel = action.payload;
+      state.channel = [...action.payload];
     },
     SET_CHANNEL: (state: AppState, action: PayloadAction<Channel>) => {
       state.selectedChannel = action.payload;

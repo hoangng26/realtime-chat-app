@@ -1,16 +1,10 @@
 import { CHANNEL_EVENTS } from '@/core/constants/socketEvents';
 import { Channel } from '@/core/models/Channel';
-import { SET_CHANNEL, SET_USER, useAppDispatch } from '@/core/redux/action';
 import { socket } from '@/core/socket';
-import { saveSessionInfo } from '@/core/utils/localStorage';
 import { Input, Modal, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const AuthPageComponent: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
   const [listChannel, setListChannel] = useState<Channel[]>([]);
   const [inputValue, setInputValue] = useState({
     userName: '',
@@ -19,28 +13,25 @@ const AuthPageComponent: React.FC = () => {
 
   useEffect(() => {
     socket.emit(CHANNEL_EVENTS.FIND_ALL);
-    socket.on(CHANNEL_EVENTS.FIND_ALL, (data: Channel[]) => {
+    const setListPublicChannel = (data: Channel[]) => {
       setListChannel(data);
-    });
+    };
+
+    socket.on(CHANNEL_EVENTS.FIND_ALL, setListPublicChannel);
+
+    return () => {
+      socket.off(CHANNEL_EVENTS.FIND_ALL, setListPublicChannel);
+    };
   }, []);
 
-  const okButtonHandler = () => {
+  const okButtonHandler = async () => {
     const { userName, channelId } = inputValue;
 
-    socket.emit(CHANNEL_EVENTS.JOIN, {
+    await socket.emitWithAck(CHANNEL_EVENTS.JOIN, {
       userName,
       channelId,
     });
-    socket.on(CHANNEL_EVENTS.JOIN, ({ data }) => {
-      const { user } = data;
-      dispatch(SET_USER(user));
-      saveSessionInfo(user, channelId);
-      socket.emit(CHANNEL_EVENTS.FIND_ONE, channelId);
-    });
-    socket.on(CHANNEL_EVENTS.FIND_ONE, (channel: Channel) => {
-      dispatch(SET_CHANNEL(channel));
-      navigate(`/chat/${channelId}`);
-    });
+    await socket.emitWithAck(CHANNEL_EVENTS.FIND_ONE, channelId);
   };
 
   return (

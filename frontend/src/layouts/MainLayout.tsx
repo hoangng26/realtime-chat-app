@@ -4,6 +4,7 @@ import { Channel } from '@/core/models/Channel';
 import { User } from '@/core/models/User';
 import { SET_CHANNEL, SET_LIST_CHANNEL, SET_USER, useAppDispatch, useAppState } from '@/core/redux/action';
 import { socket } from '@/core/socket';
+import { saveSessionInfo } from '@/core/utils/localStorage';
 import { socketEndSession } from '@/core/utils/socket';
 import { ApartmentOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Divider, Layout, Menu } from 'antd';
@@ -17,23 +18,29 @@ const MainLayout: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedChannelId, setSelectedChannelId] = useState(localStorage.getItem('channelId') || '');
+  const userId = localStorage.getItem('userId');
+  const userName = localStorage.getItem('userName');
+  const channelId = localStorage.getItem('channelId');
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    const userName = localStorage.getItem('userName');
-    let channelId = localStorage.getItem('channelId');
-
     if (!userName && !userId) {
-      console.log('true');
       navigate('/auth');
       return;
     }
     socket.emit(USER_EVENTS.FIND_ONE, userId);
-    socket.on(USER_EVENTS.FIND_ONE, (data: User) => {
-      dispatch(SET_USER(data));
-    });
     socket.emit(CHANNEL_EVENTS.FIND_USER_CHANNELS, userName);
-    socket.on(CHANNEL_EVENTS.FIND_USER_CHANNELS, (response: { channelId: number; channel: Channel }[]) => {
+    socket.emit(CHANNEL_EVENTS.JOIN, {
+      userName,
+      channelId,
+    });
+  }, [channelId, dispatch, navigate, userId, userName]);
+
+  useEffect(() => {
+    const setUser = (data: User) => {
+      dispatch(SET_USER(data));
+    };
+
+    const setListChannel = (response: { channelId: number; channel: Channel }[]) => {
       const channels = response.map((item) => item.channel);
       const selectedChannel = channels.find((item) => item.id.toString() === channelId);
 
@@ -42,16 +49,51 @@ const MainLayout: React.FC = () => {
         dispatch(SET_CHANNEL(selectedChannel));
         setSelectedChannelId(channelId);
       } else {
-        channelId = channels[0].id.toString();
         dispatch(SET_CHANNEL(channels[0]));
         setSelectedChannelId(channels[0].id.toString());
       }
-    });
-    socket.emit(CHANNEL_EVENTS.JOIN, {
-      userName,
-      channelId,
-    });
-  }, [dispatch, navigate]);
+    };
+
+    const userJoinChannel = ({ data }: { data: { user: User; channel: Channel } }) => {
+      const { user, channel } = data;
+      if (appState.user.id && user.id != appState.user.id) {
+        return;
+      }
+      dispatch(SET_CHANNEL(channel));
+      saveSessionInfo(user, channel.id.toString());
+      navigate(`/chat/${channel.id}`);
+    };
+
+    const setSelectedChannel = (channel: Channel) => {
+      dispatch(SET_CHANNEL(channel));
+      navigate(`/chat/${channel.id}`);
+    };
+
+    const createChannel = (data: Channel) => {
+      const { id } = data;
+      socket.emit(CHANNEL_EVENTS.JOIN, {
+        userName: appState.user.userName,
+        channelId: id,
+      });
+      window.location.reload();
+    };
+
+    socket.on(USER_EVENTS.FIND_ONE, setUser);
+
+    socket.on(CHANNEL_EVENTS.FIND_USER_CHANNELS, setListChannel);
+    socket.on(CHANNEL_EVENTS.JOIN, userJoinChannel);
+    socket.on(CHANNEL_EVENTS.FIND_ONE, setSelectedChannel);
+    socket.on(CHANNEL_EVENTS.CREATE, createChannel);
+
+    return () => {
+      socket.off(USER_EVENTS.FIND_ONE, setUser);
+
+      socket.off(CHANNEL_EVENTS.FIND_USER_CHANNELS, setListChannel);
+      socket.off(CHANNEL_EVENTS.JOIN, userJoinChannel);
+      socket.off(CHANNEL_EVENTS.FIND_ONE, setSelectedChannel);
+      socket.off(CHANNEL_EVENTS.CREATE, createChannel);
+    };
+  }, [appState.user, channelId, dispatch, navigate]);
 
   const MenuSelectHandler: SelectEventHandler = ({ key }) => {
     if (!selectedChannelId) {
@@ -64,10 +106,7 @@ const MainLayout: React.FC = () => {
       channelId: key,
     });
     socket.emit(CHANNEL_EVENTS.FIND_ONE, key);
-    socket.on(CHANNEL_EVENTS.FIND_ONE, (channel: Channel) => {
-      dispatch(SET_CHANNEL(channel));
-      navigate(`/chat/${key}`);
-    });
+    saveSessionInfo(appState.user, key);
   };
 
   return (

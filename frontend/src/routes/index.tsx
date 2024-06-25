@@ -17,11 +17,11 @@ const routes = createBrowserRouter([
         path: 'chat/:id',
         element: <ChatPageComponent />,
       },
+      {
+        path: '/auth',
+        element: <AuthPageComponent />,
+      },
     ],
-  },
-  {
-    path: '/auth',
-    element: <AuthPageComponent />,
   },
 ]);
 

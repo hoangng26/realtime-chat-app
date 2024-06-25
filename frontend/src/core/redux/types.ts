@@ -7,7 +7,7 @@ export type AppDispatch = typeof store.dispatch;
 export interface AppState {
   user: User;
   channel: Channel[];
-  selectedChannel?: Channel;
+  selectedChannel: Channel;
   client: {
     loading: boolean;
   };
