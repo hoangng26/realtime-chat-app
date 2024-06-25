@@ -137,7 +137,7 @@ const SiderActionMenuComponent: React.FC = () => {
         title="Add channel"
       >
         <Input
-          placeholder="Please input your username"
+          placeholder="Please input your channel name"
           value={channelInput}
           onChange={(event) => setChannelInput(event.currentTarget.value)}
         />
